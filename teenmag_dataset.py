@@ -8,7 +8,7 @@ from sklearn.decomposition import PCA
 import os.path as osp
 
 class TeenmagData(Dataset):
-    def __init__(self, DEBUG=None, folder="data"):
+    def __init__(self, DEBUG=None, folder="data", transform=None):
         super().__init__()
 
         self.x = None
@@ -16,6 +16,9 @@ class TeenmagData(Dataset):
         self.val_x = None
         self.DEBUG = DEBUG
         self.colvar = False
+        self.w = None
+        self.h = None
+
 
         #with open(folder+"/"+"training_x.dat", 'rb') as f:
         with open(osp.join(folder, "training_x.dat"), 'rb') as f:
@@ -58,16 +61,18 @@ class TeenmagData(Dataset):
         self.y = np.array(self.y).astype(int)
         self.y = t.tensor(self.y).float()
 
+        self.h = self.x[0].shape[0]
+        self.w = self.h
         print("Processed")
 
-    def transform(self, methods=None, n_components=10):
+    #def transform(self, methods=None, n_components=10):
 
-        #x_centered = self.x - np.mean(self.x)
-        # PCA
-        pca = PCA(n_components)
-        self.x = np.array(pca.fit_transform(self.x.T)).T
+    #    #x_centered = self.x - np.mean(self.x)
+    #    # PCA
+    #    pca = PCA(n_components)
+    #    self.x = np.array(pca.fit_transform(self.x.T)).T
 
-        if self.DEBUG: print("PCA completed")
+    #    if self.DEBUG: print("PCA completed")
 
     def visualize(self):
 

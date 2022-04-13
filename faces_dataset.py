@@ -22,6 +22,8 @@ class FacesData(Dataset):
         self.removed = None
         self.img_list = []
         self.path = path
+        self.w = None
+        self.h = None
 
         # Get the list of all files and directories
         self.img_list = os.listdir(path)
@@ -31,6 +33,7 @@ class FacesData(Dataset):
 
     def process(self, size=(64,64), limit=None, shuffle=False, seed=42):
         ### Clean, Downscale and grayscale to single channel.
+        self.w, self.h = size
 
         ## Remove all below treshold size.
         self.removed = []
@@ -69,7 +72,8 @@ class FacesData(Dataset):
         self.x = np.array([np.array(img.convert('L')) for img in self.x])
         self.x = t.tensor(self.x).float()/255
         self.y = np.zeros(len(self.x))
-        print("Processed")
+        self.x = self.x.reshape(-1, 1, self.h, self.w)
+        print("Processed into shape:", self.x.shape)
 
     def transform(self, methods=None, n_components=10):
 
